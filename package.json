@@ -1,14 +1,14 @@
 {
   "name": "mi-proyecto-react",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "homepage": "https://Hajhosua.github.io/github-pages",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build": "vite build && copy dist\\index.html dist\\404.html",
     "preview": "vite preview",
+    "lint": "eslint .",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
