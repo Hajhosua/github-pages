@@ -2,7 +2,7 @@
   "name": "mi-proyecto-react",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://Hajhosua.github.io/github-pages",
+"homepage": "https://hajhosua.github.io/github-pages",
   "type": "module",
   "scripts": {
     "dev": "vite",
