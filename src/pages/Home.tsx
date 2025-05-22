@@ -14,7 +14,7 @@ function Home() {
           ¡Hola! Soy Josué González
         </h1>
         <p className="text-base sm:text-lg text-gray-300">
-          Desarrollador web apasionado por crear soluciones modernas, visuales y funcionales. Especializado en React, JavaScript y desarrollo backend con Python/FastAPI.
+          Desarrollador web apasionado por crear soluciones modernas.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <a
