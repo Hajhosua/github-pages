@@ -1,6 +1,6 @@
 /* Estilos generales del navbar */
 .navbar {
-    background-color: #333;
+    background-color: #0e1a2b; /* un azul oscuro más suave que #333 */
     padding: 0.5rem 1rem;
     color: white;
 }
@@ -17,7 +17,7 @@
     font-size: 1.5rem;
     background: none;
     border: none;
-    color: white;
+    color: #22d3ee; /* cyan-400 para que resalte */
     cursor: pointer;
     display: none;
     transition: transform 0.3s ease; /* Transición suave para el giro */
@@ -25,7 +25,7 @@
 
 /* Cuando el menú está abierto, se rota el botón */
 .menu-toggle.open {
-    transform: rotate(90deg); /* Aquí agregamos el giro de 90 grados */
+    transform: rotate(90deg);
 }
 
 /* Menú en pantallas grandes */
@@ -35,13 +35,15 @@
 }
 
 .menu a {
-    color: white;
+    color: #22d3ee; /* cyan-400 */
     text-decoration: none;
     padding: 0.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .menu a:hover {
-    background-color: #555;
+    background-color: #0284c7; /* blue-600 */
+    color: white;
     border-radius: 5px;
 }
 
@@ -50,7 +52,7 @@
     .menu {
         display: none;
         flex-direction: column;
-        background-color: #333;
+        background-color: #0e1a2b;
         position: absolute;
         top: 100%;
         right: 0;
@@ -58,7 +60,7 @@
         min-width: 130px;
         padding: 0.5rem;
         text-align: left;
-        border: 1px solid #444;
+        border: 1px solid #144e7f; /* blue-700 borde */
         border-radius: 5px;
         z-index: 1000;
     }
@@ -67,7 +69,6 @@
         display: flex;
     }
 
-    /* Aseguramos que el botón de menú sea visible en pantallas pequeñas */
     .menu-toggle {
         display: block;
     }
