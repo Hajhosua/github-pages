@@ -2,11 +2,11 @@
   "name": "mi-proyecto-react",
   "version": "0.0.0",
   "private": true,
-"homepage": "https://hajhosua.github.io/github-pages",
+  "homepage": "https://hajhosua.github.io/github-pages",
   "type": "module",
   "scripts": {
     "dev": "vite",
-"build": "vite build && copy dist\\index.html dist\\404.html",
+    "build": "vite build && copy dist\\index.html dist\\404.html",
     "preview": "vite preview",
     "lint": "eslint .",
     "predeploy": "npm run build",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "bootstrap": "^5.3.6",
+    "framer-motion": "^12.12.2",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.1.0",
