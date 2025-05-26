@@ -20,6 +20,8 @@ function Navbar() {
         <div className={`menu ${isOpen ? 'open' : ''}`}>
           <Link to="/" onClick={() => setIsOpen(false)}>Inicio</Link>
           <Link to="/contact" onClick={() => setIsOpen(false)}>Contacto</Link>
+          <Link to="/opinion" onClick={() => setIsOpen(false)}>Opiniones</Link>
+
 
         </div>
       </div>
