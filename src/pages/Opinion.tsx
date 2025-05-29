@@ -5,33 +5,72 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./slider.css";
 
-export default function ComentariosSlider() {
-  const [comentarios, setComentarios] = useState([
-    {
-      nombre: "Santiago González",
-      comentario: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      avatar: "./public/imagenes/avatarr/1.png",
-    },
-    {
-      nombre: "Juan González",
-      comentario: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      avatar: "./public/imagenes/avatarr/2.png",
-    },
-  ]);
+const BASE_URL = "/github-pages"; // Base para rutas de imágenes
+const STORAGE_KEY = "comentariosGuardados";
+const STORAGE_LOGIN_KEY = "loginAdminActivo";
+const PASSWORD = "1037856043"; // contraseña fija (puedes cambiarla)
 
+interface Comentario {
+  nombre: string;
+  comentario: string;
+  avatar: string;
+}
+
+export default function ComentariosSlider() {
+  const [comentarios, setComentarios] = useState<Comentario[]>(() => {
+    const guardados = localStorage.getItem(STORAGE_KEY);
+    if (guardados) return JSON.parse(guardados) as Comentario[];
+    return [
+      {
+        nombre: "Santiago González",
+        comentario:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        avatar: `${BASE_URL}/imagenes/avatarr/1.png`,
+      },
+      {
+        nombre: "Juan González",
+        comentario:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        avatar: `${BASE_URL}/imagenes/avatarr/2.png`,
+      },
+    ];
+  });
+
+  const [nombre, setNombre] = useState(() => localStorage.getItem("nombreGuardado") || "");
   const [nuevoComentario, setNuevoComentario] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [avatarSeleccionado, setAvatarSeleccionado] = useState("");
+  const [avatarSeleccionado, setAvatarSeleccionado] = useState(() => localStorage.getItem("avatarGuardado") || "");
   const [avatares, setAvatares] = useState<string[]>([]);
 
+  // Estado para login admin
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem(STORAGE_LOGIN_KEY) === "true");
+  const [inputPassword, setInputPassword] = useState("");
+
+  // Carga los avatares disponibles al montar el componente
   useEffect(() => {
     setAvatares([
-      "./public/imagenes/avatarr/1.png",
-      "./public/imagenes/avatarr/2.png",
-      "./public/imagenes/avatarr/3.png",
-      "./public/imagenes/avatarr/4.png",
-      "./public/imagenes/avatarr/5.png",
+      `${BASE_URL}/imagenes/avatarr/1.png`,
+      `${BASE_URL}/imagenes/avatarr/2.png`,
+      `${BASE_URL}/imagenes/avatarr/3.png`,
+      `${BASE_URL}/imagenes/avatarr/4.png`,
+      `${BASE_URL}/imagenes/avatarr/5.png`,
     ]);
+  }, []);
+
+  // Guarda en localStorage los comentarios, nombre, avatar y estado admin
+  useEffect(() => localStorage.setItem(STORAGE_KEY, JSON.stringify(comentarios)), [comentarios]);
+  useEffect(() => localStorage.setItem("nombreGuardado", nombre), [nombre]);
+  useEffect(() => localStorage.setItem("avatarGuardado", avatarSeleccionado), [avatarSeleccionado]);
+  useEffect(() => localStorage.setItem(STORAGE_LOGIN_KEY, isAdmin.toString()), [isAdmin]);
+
+  // Atajo para alternar modo admin (Ctrl+A)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "a") {
+        setIsAdmin((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const configuracionSlider = {
@@ -62,12 +101,30 @@ export default function ComentariosSlider() {
       },
     ]);
     setNuevoComentario("");
-    setNombre("");
-    setAvatarSeleccionado("");
   };
 
   const eliminarComentario = (indice: number) => {
+    if (!isAdmin) {
+      alert("No tienes permiso para eliminar comentarios");
+      return;
+    }
     setComentarios(comentarios.filter((_, i) => i !== indice));
+  };
+
+  const manejarLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputPassword === PASSWORD) {
+      setIsAdmin(true);
+      setInputPassword("");
+    } else {
+      alert("Contraseña incorrecta");
+    }
+  };
+
+  const manejarLogout = () => {
+    if (window.confirm("¿Seguro que quieres salir del modo administrador?")) {
+      setIsAdmin(false);
+    }
   };
 
   return (
@@ -77,20 +134,26 @@ export default function ComentariosSlider() {
           {comentarios.map((coment, indice) => (
             <div key={indice} className="mi-slide">
               <div className="comentario-box">
-                <button
-                  onClick={() => eliminarComentario(indice)}
-                  className="boton-eliminar"
-                >
-                  ❌
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => eliminarComentario(indice)}
+                    className="boton-eliminar"
+                    aria-label={`Eliminar comentario de ${coment.nombre}`}
+                  >
+                    ❌
+                  </button>
+                )}
                 <img
                   src={coment.avatar}
-                  alt="avatar"
+                  alt={`Avatar de ${coment.nombre}`}
                   style={{
-                    width: 60,
-                    height: 60,
+                    width: 100,
+                    height: 100,
                     borderRadius: "50%",
-                    marginBottom: 10,
+                    marginBottom: 15,
+                    display: "block",
+                    marginLeft: "auto",
+                    marginRight: "auto",
                   }}
                 />
                 <h3>{coment.nombre}</h3>
@@ -108,6 +171,7 @@ export default function ComentariosSlider() {
             placeholder="Tu nombre"
             className="input-comentario"
           />
+
           <input
             type="text"
             value={nuevoComentario}
@@ -135,10 +199,7 @@ export default function ComentariosSlider() {
                   width: 60,
                   height: 60,
                   borderRadius: "50%",
-                  border:
-                    avatarSeleccionado === url
-                      ? "3px solid #00bfff"
-                      : "2px solid gray",
+                  border: avatarSeleccionado === url ? "3px solid #00bfff" : "2px solid gray",
                   cursor: "pointer",
                 }}
               />
@@ -149,6 +210,31 @@ export default function ComentariosSlider() {
             Comentar
           </button>
         </form>
+
+        {/* Login admin separado para evitar anidación incorrecta de formularios */}
+        <div className="login-admin-container" style={{ marginTop: "15px" }}>
+          {!isAdmin ? (
+            <form onSubmit={manejarLogin} className="form-login-admin">
+              <input
+                type="password"
+                placeholder="Contraseña admin"
+                value={inputPassword}
+                onChange={(e) => setInputPassword(e.target.value)}
+                className="input-admin"
+              />
+              <button type="submit" className="boton-admin" style={{ marginLeft: 8 }}>
+                Entrar
+              </button>
+            </form>
+          ) : (
+            <div className="admin-logged-in">
+              <span>M. admin activo</span>
+              <button onClick={manejarLogout} className="boton-admin">
+                Salir
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
